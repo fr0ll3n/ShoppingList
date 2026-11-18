@@ -56,22 +56,21 @@ namespace ShoppingList.Controllers
         // GET: ProductsController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var product = this.data.Products.Find(id);
+            var productToEdit = new ProductCreateVM()
+            { ProductName = product.ProductName };
+            return View(productToEdit);
         }
 
         // POST: ProductsController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, ProductCreateVM model)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            var product = this.data.Products.Find(id);
+            product.ProductName = model.ProductName;
+            this.data.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         // GET: ProductsController/Delete/5
@@ -85,14 +84,10 @@ namespace ShoppingList.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            var product = this.data.Products.Find(id);
+            this.data.Products.Remove(product);
+            this.data.SaveChanges();
+            return RedirectToAction("Index");
         }
     }
 }
